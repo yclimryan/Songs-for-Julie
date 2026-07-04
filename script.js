@@ -20,14 +20,20 @@ function playTrack(index) {
 }
 
 tracks.forEach((track, index) => {
-  track.querySelector(".play-button").addEventListener("click", () => {
+  const playButton = track.querySelector(".play-button");
+  const title = track.querySelector(".title");
+
+  function toggleTrack() {
     if (currentIndex === index && !audio.paused) {
       audio.pause();
-      track.querySelector(".play-button").textContent = "▶";
+      playButton.textContent = "▶";
     } else {
       playTrack(index);
     }
-  });
+  }
+
+  playButton.addEventListener("click", toggleTrack);
+  title.addEventListener("click", toggleTrack);
 });
 
 playAll.addEventListener("click", () => {
