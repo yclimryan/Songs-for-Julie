@@ -4,6 +4,23 @@ const playAll = document.getElementById("playAll");
 
 let currentIndex = -1;
 
+const playIcon = `
+<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <polygon points="8,5 19,12 8,19"></polygon>
+</svg>`;
+
+const pauseIcon = `
+<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+  <rect x="6" y="5" width="4" height="14"></rect>
+  <rect x="14" y="5" width="4" height="14"></rect>
+</svg>`;
+
+function resetButtons() {
+  document.querySelectorAll(".play-button").forEach(btn => {
+    btn.innerHTML = playIcon;
+  });
+}
+
 function playTrack(index) {
   const track = tracks[index];
   if (!track) return;
@@ -15,18 +32,20 @@ function playTrack(index) {
   audio.src = track.dataset.src;
   audio.play();
 
-  document.querySelectorAll(".play-button").forEach(btn => btn.textContent = "▶");
-  track.querySelector(".play-button").textContent = "⏸";
+  resetButtons();
+  track.querySelector(".play-button").innerHTML = pauseIcon;
 }
 
 tracks.forEach((track, index) => {
   const playButton = track.querySelector(".play-button");
   const title = track.querySelector(".title");
 
+  playButton.innerHTML = playIcon;
+
   function toggleTrack() {
     if (currentIndex === index && !audio.paused) {
       audio.pause();
-      playButton.textContent = "▶";
+      playButton.innerHTML = playIcon;
     } else {
       playTrack(index);
     }
@@ -43,5 +62,9 @@ playAll.addEventListener("click", () => {
 audio.addEventListener("ended", () => {
   if (currentIndex + 1 < tracks.length) {
     playTrack(currentIndex + 1);
+  } else {
+    resetButtons();
+    tracks.forEach(t => t.classList.remove("active"));
+    currentIndex = -1;
   }
 });
